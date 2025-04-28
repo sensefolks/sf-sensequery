@@ -1,7 +1,7 @@
 {
   "name": "sf-sensequery",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Uncover unanswered questions and identify what your audience wants to know",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/types/index.d.ts",
@@ -13,10 +13,6 @@
       "import": "./dist/sf-sensequery/sf-sensequery.esm.js",
       "require": "./dist/sf-sensequery/sf-sensequery.cjs.js"
     },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
-    },
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
@@ -25,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/stenciljs/component-starter.git"
+    "url": "https://github.com/sensefolks/sf-sensequery.git"
   },
   "files": [
     "dist/",

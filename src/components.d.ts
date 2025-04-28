@@ -6,56 +6,40 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
-    interface MyComponent {
+    interface SfSensequery {
         /**
-          * The first name
+          * The unique key for the survey to display
          */
-        "first": string;
-        /**
-          * The last name
-         */
-        "last": string;
-        /**
-          * The middle name
-         */
-        "middle": string;
+        "surveyKey": string;
     }
 }
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    interface HTMLSfSensequeryElement extends Components.SfSensequery, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLSfSensequeryElement: {
+        prototype: HTMLSfSensequeryElement;
+        new (): HTMLSfSensequeryElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "sf-sensequery": HTMLSfSensequeryElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    interface SfSensequery {
         /**
-          * The first name
+          * The unique key for the survey to display
          */
-        "first"?: string;
-        /**
-          * The last name
-         */
-        "last"?: string;
-        /**
-          * The middle name
-         */
-        "middle"?: string;
+        "surveyKey"?: string;
     }
     interface IntrinsicElements {
-        "my-component": MyComponent;
+        "sf-sensequery": SfSensequery;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.MyComponent & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            "sf-sensequery": LocalJSX.SfSensequery & JSXBase.HTMLAttributes<HTMLSfSensequeryElement>;
         }
     }
 }

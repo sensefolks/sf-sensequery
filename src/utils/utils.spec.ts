@@ -1,19 +1,19 @@
-import { format } from './utils';
+import { isValidKey } from './utils';
 
-describe('format', () => {
-  it('returns empty string for no names defined', () => {
-    expect(format(undefined, undefined, undefined)).toEqual('');
+describe('isValidKey', () => {
+  it('returns false for undefined key', () => {
+    expect(isValidKey(undefined)).toEqual(false);
   });
 
-  it('formats just first names', () => {
-    expect(format('Joseph', undefined, undefined)).toEqual('Joseph');
+  it('returns false for empty string', () => {
+    expect(isValidKey('')).toEqual(false);
   });
 
-  it('formats first and last names', () => {
-    expect(format('Joseph', undefined, 'Publique')).toEqual('Joseph Publique');
+  it('returns false for whitespace string', () => {
+    expect(isValidKey('   ')).toEqual(false);
   });
 
-  it('formats first, middle and last names', () => {
-    expect(format('Joseph', 'Quincy', 'Publique')).toEqual('Joseph Quincy Publique');
+  it('returns true for valid key', () => {
+    expect(isValidKey('valid-key')).toEqual(true);
   });
 });

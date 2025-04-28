@@ -1,3 +1,4 @@
-export function format(first?: string, middle?: string, last?: string): string {
-  return (first || '') + (middle ? ` ${middle}` : '') + (last ? ` ${last}` : '');
+// Utility functions for sf-sensequery
+export function isValidKey(key: string): boolean {
+  return typeof key === 'string' && key.trim().length > 0;
 }
