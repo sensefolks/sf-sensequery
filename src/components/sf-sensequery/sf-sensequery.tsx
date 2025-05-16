@@ -239,6 +239,12 @@ export class SfSensequery {
     }
   }
 
+  private handleTextareaBlur() {
+    if (this.questionInput.trim() === '') {
+      this.surveyStartTime = 0;
+    }
+  }
+
   private renderQuestionStep() {
     const isFinalStep = !this.hasCategoriesStep() && !this.hasRespondentDetailsStep();
 
@@ -250,6 +256,7 @@ export class SfSensequery {
           value={this.questionInput}
           onInput={e => this.handleQuestionChange(e)}
           onFocus={() => this.handleTextareaFocus()}
+          onBlur={() => this.handleTextareaBlur()}
           placeholder="Type your question here..."
           rows={4}
         ></textarea>
