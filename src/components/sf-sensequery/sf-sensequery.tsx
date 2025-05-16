@@ -2,14 +2,13 @@ import { Component, Host, h, Prop, State } from '@stencil/core';
 import { isValidKey, formatErrorMessage } from '../../utils/utils';
 
 // API endpoints for fetching survey data
-// const SURVEY_API_ENDPOINT = 'https://api.sensefolks.com/v1/public-surveys'; // Production
-const SURVEY_API_ENDPOINT = 'http://localhost:5555/v1/public-surveys'; // Development
+// const SURVEY_API_ENDPOINT = 'https://api.sensefolks.com/v1/public-surveys';
+const SURVEY_API_ENDPOINT = 'http://localhost:5555/v1/public-surveys';
 
 // API endpoints for submitting survey responses
-// const RESPONSE_API_ENDPOINT = 'https://api.sensefolks.com/v1/responses'; // Production
-const RESPONSE_API_ENDPOINT = 'http://localhost:6666/v1/responses'; // Development
+// const RESPONSE_API_ENDPOINT = 'https://api.sensefolks.com/v1/responses';
+const RESPONSE_API_ENDPOINT = 'http://localhost:6666/v1/responses';
 
-// Define the possible steps in the survey wizard
 enum SurveyStep {
   QUESTION = 0,
   CATEGORY = 1,
@@ -17,32 +16,27 @@ enum SurveyStep {
   THANK_YOU = 3,
 }
 
-// Define the structure for categories
 interface Category {
   label: string;
   value: string;
 }
 
-// Define the respondent detail field
 interface RespondentDetail {
   label: string;
   value: string;
 }
 
-// Define the survey configuration
 interface SurveyConfig {
   question: string;
   categories?: Category[];
   thankYouMessage: string;
 }
 
-// Define the payload structure
 interface SurveyPayload {
   config: SurveyConfig;
   respondentDetails: RespondentDetail[];
 }
 
-// Define the API response structure
 interface ApiResponse {
   success: boolean;
   message: string;
@@ -55,59 +49,26 @@ interface ApiResponse {
   shadow: true,
 })
 export class SfSensequery {
-  /**
-   * The unique key for the survey to display
-   */
   @Prop() surveyKey: string;
 
-  /**
-   * Store the survey configuration
-   */
   @State() config: SurveyConfig | null = null;
 
-  /**
-   * Store the respondent details configuration
-   */
   @State() respondentDetails: RespondentDetail[] = [];
 
-  /**
-   * Track loading state
-   */
   @State() loading: boolean = false;
 
-  /**
-   * Track error state
-   */
   @State() error: string | null = null;
 
-  /**
-   * Current step in the wizard
-   */
   @State() currentStep: SurveyStep = SurveyStep.QUESTION;
 
-  /**
-   * User's question input
-   */
   @State() questionInput: string = '';
 
-  /**
-   * Selected category
-   */
   @State() selectedCategory: string | null = null;
 
-  /**
-   * User's respondent details
-   */
   @State() userRespondentDetails: { [key: string]: string } = {};
 
-  /**
-   * Track if the survey has been submitted
-   */
   @State() submitted: boolean = false;
 
-  /**
-   * Component lifecycle method that is called once before the component is first connected to the DOM
-   */
   componentWillLoad() {
     if (isValidKey(this.surveyKey)) {
       return this.fetchSurveyData();
@@ -115,14 +76,10 @@ export class SfSensequery {
     return Promise.resolve();
   }
 
-  /**
-   * Fetch survey data from the API
-   */
   private async fetchSurveyData() {
     this.loading = true;
     this.error = null;
 
-    // API endpoint to fetch survey data
     const endpoint: string = `${SURVEY_API_ENDPOINT}/${this.surveyKey}`;
 
     try {
@@ -134,14 +91,10 @@ export class SfSensequery {
 
       const apiResponse: ApiResponse = await response.json();
 
-      console.log('API Response:', apiResponse);
-
-      // Check if the API call was successful
       if (!apiResponse.success) {
         throw new Error(apiResponse.message || 'API returned an error');
       }
 
-      // Check if we have valid data
       if (!apiResponse.payload || !apiResponse.payload.config || !apiResponse.payload.config.question) {
         throw new Error('Invalid survey data received');
       }
@@ -156,24 +109,15 @@ export class SfSensequery {
     }
   }
 
-  /**
-   * Handle question input change
-   */
   private handleQuestionChange(event: Event) {
     const input = event.target as HTMLInputElement;
     this.questionInput = input.value;
   }
 
-  /**
-   * Handle category selection
-   */
   private handleCategorySelect(value: string) {
     this.selectedCategory = value;
   }
 
-  /**
-   * Handle respondent detail input change
-   */
   private handleRespondentDetailChange(fieldId: string, event: Event) {
     const input = event.target as HTMLInputElement | HTMLSelectElement;
     this.userRespondentDetails = {
@@ -182,61 +126,38 @@ export class SfSensequery {
     };
   }
 
-  /**
-   * Check if the current step is valid and can proceed
-   */
   private isCurrentStepValid(): boolean {
-    // Question step validation
     if (this.currentStep === SurveyStep.QUESTION) {
       return this.questionInput.trim().length > 0;
     }
 
-    // Category step validation
     if (this.currentStep === SurveyStep.CATEGORY) {
-      // If we have categories, a selection is required
       if (this.config?.categories?.length) {
         return this.selectedCategory !== null;
       }
     }
 
-    // Respondent details validation
-    // For now, we're not validating required fields in respondent details
-
     return true;
   }
 
-  /**
-   * Check if categories are available
-   */
   private hasCategoriesStep(): boolean {
     return this.config?.categories?.length > 0;
   }
 
-  /**
-   * Check if respondent details are available
-   */
   private hasRespondentDetailsStep(): boolean {
     return this.respondentDetails && this.respondentDetails.length > 0;
   }
 
-  /**
-   * Move to the next step in the wizard
-   */
   private nextStep() {
-    // Don't proceed if current step is not valid
     if (!this.isCurrentStepValid()) {
       return;
     }
 
-    // Handle each step transition
     switch (this.currentStep) {
       case SurveyStep.QUESTION:
-        // If both categories and respondent details are not present, submit directly
         if (!this.hasCategoriesStep() && !this.hasRespondentDetailsStep()) {
           this.submitSurvey();
-        }
-        // If no categories, skip to respondent details
-        else if (!this.hasCategoriesStep()) {
+        } else if (!this.hasCategoriesStep()) {
           this.currentStep = SurveyStep.RESPONDENT_DETAILS;
         } else {
           this.currentStep = SurveyStep.CATEGORY;
@@ -244,7 +165,6 @@ export class SfSensequery {
         break;
 
       case SurveyStep.CATEGORY:
-        // If no respondent details, submit the survey
         if (!this.hasRespondentDetailsStep()) {
           this.submitSurvey();
         } else {
@@ -253,7 +173,6 @@ export class SfSensequery {
         break;
 
       case SurveyStep.RESPONDENT_DETAILS:
-        // Submit the survey
         this.submitSurvey();
         break;
     }

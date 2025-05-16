@@ -7,9 +7,6 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
     interface SfSensequery {
-        /**
-          * The unique key for the survey to display
-         */
         "surveyKey": string;
     }
 }
@@ -26,9 +23,6 @@ declare global {
 }
 declare namespace LocalJSX {
     interface SfSensequery {
-        /**
-          * The unique key for the survey to display
-         */
         "surveyKey"?: string;
     }
     interface IntrinsicElements {
