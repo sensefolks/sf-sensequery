@@ -1,6 +1,14 @@
 import { Component, Host, h, Prop, State } from '@stencil/core';
 import { isValidKey, formatErrorMessage } from '../../utils/utils';
 
+// API endpoints for fetching survey data
+// const SURVEY_API_ENDPOINT = 'https://api.sensefolks.com/v1/public-surveys'; // Production
+const SURVEY_API_ENDPOINT = 'http://localhost:5555/v1/public-surveys'; // Development
+
+// API endpoints for submitting survey responses
+// const RESPONSE_API_ENDPOINT = 'https://api.sensefolks.com/v1/responses'; // Production
+const RESPONSE_API_ENDPOINT = 'http://localhost:6666/v1/responses'; // Development
+
 // Define the possible steps in the survey wizard
 enum SurveyStep {
   QUESTION = 0,
@@ -115,8 +123,7 @@ export class SfSensequery {
     this.error = null;
 
     // API endpoint to fetch survey data
-    // const endpoint: string = `https://api.sensefolks.com/sensequery/${this.surveyKey}`;
-    const endpoint: string = `http://localhost:5555/v1/public-surveys/${this.surveyKey}`;
+    const endpoint: string = `${SURVEY_API_ENDPOINT}/${this.surveyKey}`;
 
     try {
       const response = await fetch(endpoint);
@@ -285,6 +292,7 @@ export class SfSensequery {
     try {
       // Prepare the submission data
       const submissionData = {
+        surveyKey: this.surveyKey,
         feedback: this.questionInput,
         category: this.selectedCategory,
         respondentDetails: this.userRespondentDetails,
@@ -293,7 +301,7 @@ export class SfSensequery {
       console.log('Submitting data:', submissionData);
 
       // Submit to the API
-      const response = await fetch(`https://api.sensefolks.com/sensequery/${this.surveyKey}/responses`, {
+      const response = await fetch(`${RESPONSE_API_ENDPOINT}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
