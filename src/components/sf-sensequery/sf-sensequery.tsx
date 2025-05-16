@@ -2,10 +2,10 @@ import { Component, Host, h, Prop, State } from '@stencil/core';
 import { isValidKey, formatErrorMessage } from '../../utils/utils';
 
 // const SURVEY_API_ENDPOINT = 'https://api.sensefolks.com/v1/public-surveys';
-const SURVEY_API_ENDPOINT = 'http://localhost:5555/v1/public-surveys';
+const SURVEY_API_ENDPOINT = 'http://localhost:4455/v1/public-surveys';
 
 // const RESPONSE_API_ENDPOINT = 'https://api.sensefolks.com/v1/responses';
-const RESPONSE_API_ENDPOINT = 'http://localhost:6666/v1/responses';
+const RESPONSE_API_ENDPOINT = 'http://localhost:4466/v1/responses';
 
 enum SurveyStep {
   QUESTION = 0,
