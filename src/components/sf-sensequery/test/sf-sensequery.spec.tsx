@@ -10,7 +10,12 @@ describe('sf-sensequery', () => {
     expect(page.root).toEqualHtml(`
       <sf-sensequery>
         <mock:shadow-root>
-          <slot></slot>
+          <div part="error-container">
+            <p part="message error-message">Please provide a valid survey key</p>
+            <button part="button retry-button">
+              Try again
+            </button>
+          </div>
         </mock:shadow-root>
       </sf-sensequery>
     `);
