@@ -67,6 +67,8 @@ export class SfSensequery {
 
   @State() submitted: boolean = false;
 
+  private surveyStartTime: number = 0;
+
   componentWillLoad() {
     if (isValidKey(this.surveyKey)) {
       return this.fetchSurveyData();
@@ -199,11 +201,14 @@ export class SfSensequery {
     this.loading = true;
 
     try {
+      const completionTimeSeconds = this.surveyStartTime > 0 ? Math.round((Date.now() - this.surveyStartTime) / 1000) : 0;
+
       const submissionData = {
         surveyKey: this.surveyKey,
         feedback: this.questionInput,
         category: this.selectedCategory,
         respondentDetails: this.userRespondentDetails,
+        completionTimeSeconds: completionTimeSeconds,
       };
 
       const response = await fetch(`${RESPONSE_API_ENDPOINT}`, {
@@ -228,13 +233,26 @@ export class SfSensequery {
     }
   }
 
+  private handleTextareaFocus() {
+    if (this.surveyStartTime === 0) {
+      this.surveyStartTime = Date.now();
+    }
+  }
+
   private renderQuestionStep() {
     const isFinalStep = !this.hasCategoriesStep() && !this.hasRespondentDetailsStep();
 
     return (
       <div part="step question-step">
         <h2 part="heading question-heading">{this.config?.question || 'What is your question?'}</h2>
-        <textarea part="input textarea" value={this.questionInput} onInput={e => this.handleQuestionChange(e)} placeholder="Type your question here..." rows={4}></textarea>
+        <textarea
+          part="input textarea"
+          value={this.questionInput}
+          onInput={e => this.handleQuestionChange(e)}
+          onFocus={() => this.handleTextareaFocus()}
+          placeholder="Type your question here..."
+          rows={4}
+        ></textarea>
         <div part="button-container">
           <button part="button next-button" onClick={() => this.nextStep()} disabled={!this.questionInput.trim()}>
             {isFinalStep ? 'Submit' : 'Next'}
