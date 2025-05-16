@@ -202,13 +202,17 @@ export class SfSensequery {
 
     try {
       const completionTimeSeconds = this.surveyStartTime > 0 ? Math.round((Date.now() - this.surveyStartTime) / 1000) : 0;
+      const userAgentInfo = this.getUserAgentInfo();
 
       const submissionData = {
-        surveyKey: this.surveyKey,
-        feedback: this.questionInput,
-        category: this.selectedCategory,
+        surveyPublicKey: this.surveyKey,
+        responseData: {
+          query: this.questionInput,
+          category: this.selectedCategory,
+        },
         respondentDetails: this.userRespondentDetails,
-        completionTimeSeconds: completionTimeSeconds,
+        userAgent: userAgentInfo,
+        completionTime: completionTimeSeconds,
       };
 
       const response = await fetch(`${RESPONSE_API_ENDPOINT}`, {
@@ -243,6 +247,78 @@ export class SfSensequery {
     if (this.questionInput.trim() === '') {
       this.surveyStartTime = 0;
     }
+  }
+
+  private getUserAgentInfo() {
+    let browser = 'Unknown';
+    let operatingSystem = 'Unknown';
+    let deviceType = 'Desktop';
+
+    if ('userAgentData' in navigator && navigator.userAgentData) {
+      const userAgentData = navigator.userAgentData as any;
+
+      if (userAgentData.brands && userAgentData.brands.length > 0) {
+        const brandInfo = userAgentData.brands.find((brand: any) => !['Chromium', 'Not-A.Brand'].includes(brand.brand));
+        if (brandInfo) {
+          browser = brandInfo.brand;
+        } else if (userAgentData.brands[0]) {
+          browser = userAgentData.brands[0].brand;
+        }
+      }
+
+      if (userAgentData.platform) {
+        operatingSystem = userAgentData.platform;
+      }
+
+      if (userAgentData.mobile) {
+        deviceType = 'Mobile';
+      }
+    } else {
+      const userAgent = navigator.userAgent;
+
+      if (userAgent.indexOf('Firefox') > -1) {
+        browser = 'Firefox';
+      } else if (userAgent.indexOf('SamsungBrowser') > -1) {
+        browser = 'Samsung Browser';
+      } else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
+        browser = 'Opera';
+      } else if (userAgent.indexOf('Trident') > -1) {
+        browser = 'Internet Explorer';
+      } else if (userAgent.indexOf('Edge') > -1) {
+        browser = 'Edge';
+      } else if (userAgent.indexOf('Chrome') > -1) {
+        browser = 'Chrome';
+      } else if (userAgent.indexOf('Safari') > -1) {
+        browser = 'Safari';
+      }
+
+      if (userAgent.indexOf('Windows') > -1) {
+        operatingSystem = 'Windows';
+      } else if (userAgent.indexOf('Mac') > -1) {
+        operatingSystem = 'MacOS';
+      } else if (userAgent.indexOf('Linux') > -1) {
+        operatingSystem = 'Linux';
+      } else if (userAgent.indexOf('Android') > -1) {
+        operatingSystem = 'Android';
+        deviceType = 'Mobile';
+      } else if (userAgent.indexOf('like Mac') > -1) {
+        operatingSystem = 'iOS';
+        deviceType = 'Mobile';
+      }
+
+      if (userAgent.indexOf('Mobile') > -1) {
+        deviceType = 'Mobile';
+      } else if (userAgent.indexOf('Tablet') > -1 || userAgent.indexOf('iPad') > -1) {
+        deviceType = 'Tablet';
+      }
+    }
+
+    return {
+      browser,
+      operatingSystem,
+      deviceType,
+      locale: navigator.language || 'en-US',
+    };
   }
 
   private renderQuestionStep() {
