@@ -1,11 +1,9 @@
 import { Component, Host, h, Prop, State } from '@stencil/core';
 import { isValidKey, formatErrorMessage } from '../../utils/utils';
 
-// API endpoints for fetching survey data
 // const SURVEY_API_ENDPOINT = 'https://api.sensefolks.com/v1/public-surveys';
 const SURVEY_API_ENDPOINT = 'http://localhost:5555/v1/public-surveys';
 
-// API endpoints for submitting survey responses
 // const RESPONSE_API_ENDPOINT = 'https://api.sensefolks.com/v1/responses';
 const RESPONSE_API_ENDPOINT = 'http://localhost:6666/v1/responses';
 
@@ -152,7 +150,6 @@ export class SfSensequery {
     if (!this.isCurrentStepValid()) {
       return;
     }
-
     switch (this.currentStep) {
       case SurveyStep.QUESTION:
         if (!this.hasCategoriesStep() && !this.hasRespondentDetailsStep()) {
@@ -178,9 +175,6 @@ export class SfSensequery {
     }
   }
 
-  /**
-   * Go back to the previous step
-   */
   private prevStep() {
     switch (this.currentStep) {
       case SurveyStep.CATEGORY:
@@ -188,7 +182,6 @@ export class SfSensequery {
         break;
 
       case SurveyStep.RESPONDENT_DETAILS:
-        // If no categories, go back to question
         if (!this.hasCategoriesStep()) {
           this.currentStep = SurveyStep.QUESTION;
         } else {
@@ -198,18 +191,14 @@ export class SfSensequery {
     }
   }
 
-  /**
-   * Submit the survey data
-   */
   private async submitSurvey() {
     if (!this.questionInput.trim()) {
-      return; // Don't submit if question is empty
+      return;
     }
 
     this.loading = true;
 
     try {
-      // Prepare the submission data
       const submissionData = {
         surveyKey: this.surveyKey,
         feedback: this.questionInput,
@@ -217,9 +206,6 @@ export class SfSensequery {
         respondentDetails: this.userRespondentDetails,
       };
 
-      console.log('Submitting data:', submissionData);
-
-      // Submit to the API
       const response = await fetch(`${RESPONSE_API_ENDPOINT}`, {
         method: 'POST',
         headers: {
@@ -232,7 +218,6 @@ export class SfSensequery {
         throw new Error(`Failed to submit response: ${response.statusText}`);
       }
 
-      // Move to thank you step
       this.currentStep = SurveyStep.THANK_YOU;
       this.submitted = true;
     } catch (err) {
@@ -243,11 +228,7 @@ export class SfSensequery {
     }
   }
 
-  /**
-   * Render the question step
-   */
   private renderQuestionStep() {
-    // Determine if this is the final step (no categories and no respondent details)
     const isFinalStep = !this.hasCategoriesStep() && !this.hasRespondentDetailsStep();
 
     return (
@@ -263,9 +244,6 @@ export class SfSensequery {
     );
   }
 
-  /**
-   * Render the category step
-   */
   private renderCategoryStep() {
     return (
       <div part="step category-step">
@@ -297,9 +275,6 @@ export class SfSensequery {
     );
   }
 
-  /**
-   * Render the respondent details step
-   */
   private renderRespondentDetailsStep() {
     return (
       <div part="step respondent-details-step">
@@ -334,20 +309,12 @@ export class SfSensequery {
     );
   }
 
-  /**
-   * Retry operation after an error
-   */
   private retryOperation() {
-    // Clear error state
     this.error = null;
 
-    // Retry fetching survey data
     return this.fetchSurveyData();
   }
 
-  /**
-   * Render the thank you step
-   */
   private renderThankYouStep() {
     return (
       <div part="step thank-you-step">
@@ -356,9 +323,6 @@ export class SfSensequery {
     );
   }
 
-  /**
-   * Render the current step based on the wizard state
-   */
   private renderCurrentStep() {
     const stepRenderers = {
       [SurveyStep.QUESTION]: this.renderQuestionStep.bind(this),
@@ -367,14 +331,12 @@ export class SfSensequery {
       [SurveyStep.THANK_YOU]: this.renderThankYouStep.bind(this),
     };
 
-    // Get the renderer for the current step or default to question step
     const renderer = stepRenderers[this.currentStep] || stepRenderers[SurveyStep.QUESTION];
 
     return renderer();
   }
 
   render() {
-    // Invalid survey key
     if (!isValidKey(this.surveyKey)) {
       return (
         <Host>
@@ -383,7 +345,6 @@ export class SfSensequery {
       );
     }
 
-    // Loading state
     if (this.loading) {
       return (
         <Host>
@@ -392,7 +353,6 @@ export class SfSensequery {
       );
     }
 
-    // Error state
     if (this.error) {
       return (
         <Host>
@@ -406,7 +366,6 @@ export class SfSensequery {
       );
     }
 
-    // No configuration found
     if (!this.config) {
       return (
         <Host>
@@ -420,7 +379,6 @@ export class SfSensequery {
       );
     }
 
-    // Survey wizard
     return <Host part="container">{this.renderCurrentStep()}</Host>;
   }
 }
