@@ -206,11 +206,13 @@ import '@sensefolks/sf-sensequery';
 
 <!-- Auto Generated Below -->
 
+
 ## Properties
 
-| Property    | Attribute    | Description                              | Type     | Default     |
-| ----------- | ------------ | ---------------------------------------- | -------- | ----------- |
-| `surveyKey` | `survey-key` | The unique key for the survey to display | `string` | `undefined` |
+| Property    | Attribute    | Description | Type     | Default     |
+| ----------- | ------------ | ----------- | -------- | ----------- |
+| `surveyKey` | `survey-key` |             | `string` | `undefined` |
+
 
 ## Shadow Parts
 
@@ -228,7 +230,6 @@ import '@sensefolks/sf-sensequery';
 | `"empty-message"`               |             |
 | `"error-container"`             |             |
 | `"error-message"`               |             |
-| `"retry-button"`                |             |
 | `"field"`                       |             |
 | `"field-label"`                 |             |
 | `"heading"`                     |             |
@@ -242,6 +243,7 @@ import '@sensefolks/sf-sensequery';
 | `"respondent-details-step"`     |             |
 | `"respondent-fields-container"` |             |
 | `"respondent-heading"`          |             |
+| `"retry-button"`                |             |
 | `"step"`                        |             |
 | `"submit-button"`               |             |
 | `"text-input"`                  |             |
@@ -249,6 +251,7 @@ import '@sensefolks/sf-sensequery';
 | `"thank-you-heading"`           |             |
 | `"thank-you-step"`              |             |
 
----
 
-_Built with [StencilJS](https://stenciljs.com/)_
+----------------------------------------------
+
+*Built with [StencilJS](https://stenciljs.com/)*

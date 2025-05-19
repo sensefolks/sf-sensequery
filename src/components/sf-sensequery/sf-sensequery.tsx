@@ -346,6 +346,8 @@ export class SfSensequery {
   }
 
   private renderCategoryStep() {
+    const isFinalStep = !this.hasRespondentDetailsStep();
+
     return (
       <div part="step category-step">
         <h2 part="heading category-heading">Select a category for your question</h2>
@@ -369,7 +371,7 @@ export class SfSensequery {
             Back
           </button>
           <button part="button next-button" onClick={() => this.nextStep()} disabled={!this.selectedCategory}>
-            Next
+            {isFinalStep ? 'Submit' : 'Next'}
           </button>
         </div>
       </div>
